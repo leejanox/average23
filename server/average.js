@@ -16,7 +16,7 @@ const { spawn } = require('child_process');//python script 실행
 // CORS 
 app.use(cors({
     //client 3000 request 만 처리
-    origin: 'http://localhost:3000', 
+    origin: 'http://192.168.0.40:3000', 
     credentials: true,
 }));
 

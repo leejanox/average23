@@ -1,0 +1,25 @@
+{
+  "Main": [],
+  "Description": [
+    "des_1.jpg", 
+    "des_2.jpg", 
+    "des_3.jpg", 
+    "des_4.jpg"
+  ],
+  "UI_UX_Design": [
+    "UI_UX_Design_1.jpg",
+    "UI_UX_Design_2.jpg",
+    "UI_UX_Design_3.jpg"
+  ],
+  "Web_Architecture": [
+    "Web_Architecture_1.jpg",
+    "Web_Architecture_2.jpg",
+    "Web_Architecture_3.jpg",
+    "Web_Architecture_4.jpg",
+    "Web_Architecture_5.jpg",
+    "Web_Architecture_6.jpg"
+  ],
+  "API_Integration_Database": [],
+  "Machine_Learning": [],
+  "Download": []
+  }
