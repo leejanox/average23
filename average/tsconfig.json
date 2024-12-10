@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext",
+      "es2015"
+    ], 
+    "types": ["jest","node","webpack-env"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "typeRoots": ["./node_modules/@types"],  
+    "baseUrl":"src",
+    "paths":{
+      "components/*":["components/*"],
+      "pages/*":["pages/*"],
+      "images/*":["images/*"],
+      "@types/*":["@types/*"],
+      "fonts/*":["fonts/*"],
+    },
+  },
+  "include": [
+    "src",
+    "**/*.d.ts",
+    "**/*.ts", "tailwind.config.js",
+  ],
+  "exclude": ["node_modules"]
+}
