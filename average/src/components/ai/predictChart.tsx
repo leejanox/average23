@@ -21,7 +21,7 @@ const PredictionChart = ({ predictions }: { predictions: number[] }) => {
                 labels: Array.from({ length: 12 }, (_, i) => `${i + 1}월`), // 1월~12월
                 datasets: [
                 {
-                    label: "예측 사용량 (kWh)",
+                    label: "예측 사용량 (kW)",
                     data: predictions,
                     borderColor: "#F794FF", // 선 색상
                     borderWidth: 2,
