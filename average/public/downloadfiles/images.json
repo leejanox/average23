@@ -9,7 +9,10 @@
   "UI_UX_Design": [
     "UI_UX_Design_1.jpg",
     "UI_UX_Design_2.jpg",
-    "UI_UX_Design_3.jpg"
+    "UI_UX_Design_3.jpg",
+    "UI_UX_Design_4.jpg",
+    "UI_UX_Design_5.jpg",
+    "UI_UX_Design_6.jpg"
   ],
   "Web_Architecture": [
     "Web_Architecture_1.jpg",
@@ -17,9 +20,26 @@
     "Web_Architecture_3.jpg",
     "Web_Architecture_4.jpg",
     "Web_Architecture_5.jpg",
-    "Web_Architecture_6.jpg"
+    "Web_Architecture_6.jpg",
+    "Web_Architecture_7.jpg",
+    "Web_Architecture_8.jpg",
+    "Web_Architecture_9.jpg"
   ],
-  "API_Integration_Database": [],
+  "API_Integration_Database": [
+    "API_1",
+    "API_2",
+    "API_3",
+    "API_4",
+    "API_5",
+    "API_6",
+    "API_7",
+    "API_8",
+    "API_9",
+    "API_10",
+    "API_11",
+    "API_12",
+    "API_13"
+  ],
   "Machine_Learning": [],
   "Download": []
   }

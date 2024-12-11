@@ -67,22 +67,24 @@ const TRYMODEL = () => {
         <div className="try-ai">
             <h1 className="try-ai-title">"저희가 만든 전력 사용량 예측 모델을 사용해보세요!"</h1>
             <div className="try-ai-left">
-                <h1 className="try-ai-subtitle">
+                <h1 className="try-ai-left-subtitle">
                     입력값 {date.slice(0,4)}년 ,{date.slice(4,6)}월 ,{date.slice(6,8)}일, 
                     {c}, {r}, {t}°C 로 예측한 결과입니다
                 </h1>
-                {loading ? (<p>예측 중입니다... 잠시만 기다려 주세요! ⏳</p>
-                ) : 
-                    predictions ? (<PredictionChart predictions={predictions} />
+                <div className="try-ai-left-content">
+                    {loading ? (<h1>예측 중입니다... 잠시만 기다려 주세요! ⏳</h1>
+                    ) : 
+                        predictions ? (<PredictionChart predictions={predictions} />
 
-                    ) : (
-                        <p>예측 결과가 여기에 표시됩니다.</p>
-                    )}
+                        ) : (
+                            <h1>예측 결과가 여기에 표시됩니다.</h1>
+                        )}
+                </div>
                 <LinkButton
-                    Link={() => handleSubmit()}
-                    text={"예측 시작!"}
-                    classname="link-button-try-ai"
-                />
+                        Link={() => handleSubmit()}
+                        text={"예측 시작!"}
+                        classname="link-button-try-ai"
+                    />
             </div>
             <div className="try-ai-right">
                 <div className="try-ai-wldurquf">

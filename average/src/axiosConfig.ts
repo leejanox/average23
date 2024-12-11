@@ -6,7 +6,7 @@ import axios from 'axios';
 //Axios를 사용하는 모든 곳에서 자동으로 적용
 //App.tsx 파일이나 Axios 관련 설정 파일에서 설정
 
-axios.defaults.withCredentials = true;
+//axios.defaults.withCredentials = true;
 
 
 export default axios;

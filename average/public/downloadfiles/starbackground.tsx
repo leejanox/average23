@@ -29,9 +29,9 @@ const StarsBackground: React.FC = () => {
       vertexColors: true, // 별 색상 지원
     });
 
-    const positions = new Float32Array(starCount * 3);
-    const colors = new Float32Array(starCount * 3);
-    const velocities = new Float32Array(starCount * 3); // 별의 초기 속도
+    const positions = new Float32Array(starCount * 2);
+    const colors = new Float32Array(starCount * 2);
+    const velocities = new Float32Array(starCount * 2); // 별의 초기 속도
     for (let i = 0; i < starCount; i++) {
       // 위치
       positions[i * 3] = (Math.random() - 0.5) * 10; // x

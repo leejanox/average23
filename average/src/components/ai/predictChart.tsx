@@ -107,7 +107,7 @@ const PredictionChart = ({ predictions }: { predictions: number[] }) => {
 
     return (
         <div className="canvas-container">
-        <canvas ref={chartRef} className="w-full h-96 bg-transparent" />
+        <canvas ref={chartRef} className="w-full h-[460px] bg-transparent" />
         </div>
     );
 };

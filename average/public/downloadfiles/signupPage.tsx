@@ -1,26 +1,37 @@
-import MainFooter from "components/main/mainFooter";
-import SignUpForm from "components/signup/signupForm";
-import SignUpHeader from "components/signup/signupHeader";
+import MainLayout from "components/layouts/mainLayout";
+import SignUpForm from "components/form/signupForm";
+import { useState } from "react";
 
-const SignUpPage = ()=>{
-    return(
-        <div className="relative bg-mainBG w-full h-screen">
-            <header className="p-10">
-                <SignUpHeader/>
-            </header>
-            <h1 className="absolute top-32 left-[780px] logo-gradient text-4xl font-bold">Sign Up Now!</h1>
-            <form className="absolute top-52 left-[440px] text-center">
-                <SignUpForm/>
-                <div className="space-x-3">
-                    <button className="rounded-3xl bg-white border w-[10px] h-[10px]"></button>
-                    <span className="text-xs text-white underline">개인 정보 처리방침 및 이용 동의</span>
+const SignUpPage = () => {
+    const [isChecked, setIsChecked] = useState<boolean>(false);
+
+    const handleClick = () => {
+        setIsChecked((prev) => !prev);
+    };
+
+    return (
+        <MainLayout>
+            <div className="signup-page-container relative flex flex-col items-center">
+                <h1 className="mt-16 logo-gradient text-4xl font-bold">Sign Up Now!</h1>
+                <h2 className="mt-6 text-lg text-white">회원가입하면 게살버거 비법소스 볼 수 있음!</h2>
+                <form className="mt-10 w-[800px]">
+                    <SignUpForm isChecked={isChecked}/>
+                </form>
+                <div className="flex flex-row justify-center items-center mt-8 gap-4">
+                    <button
+                        onClick={handleClick}
+                        className={`agree-btn ${isChecked ? "checked" : ""}`}
+                        aria-pressed={isChecked}
+                    >
+                        {isChecked ? "✔" : ""}
+                    </button>
+                    <p className="text-sm text-white underline mt-2">
+                        <a href="#">개인 정보 처리방침 및 이용 동의</a>
+                    </p>
                 </div>
-            </form>
-            <footer className="absolute bottom-12 w-full">
-                <MainFooter/>
-            </footer>
-        </div>
+            </div>
+        </MainLayout>
     );
-}
+};
 
 export default SignUpPage;

@@ -136,6 +136,10 @@ code {
     height: 80vh;
     @apply bg-transparent;
   }
+  .ai-content-container{
+    width: 100%;
+    height: 100vh;
+  }
   .description-r-content{
     width: 30%;
     height: 80vh;
@@ -146,6 +150,7 @@ code {
     @apply bg-transparent;
   }
   .ai-menu{
+    height: 30px;
     @apply fr-c w-full mt-4 mb-4;
   }
   .indicator {
@@ -162,7 +167,7 @@ code {
   /*trymodel*/
   .try-ai{
     width: 100%;
-    height: 100vh;
+    height: 80vh;
     text-align: center;
     @apply relative mt-4;
   }
@@ -174,15 +179,23 @@ code {
     @apply bg-clip-text text-transparent;
   }
   .try-ai-left{
-    width: 40%;
-    height: 100vh;
+    width: 50%;
+    height: 540px;
     text-align: center;
     @apply absolute left-0 fc-c;
   }
+  .try-ai-left-content{
+    @apply absolute top-20;
+  }
   .try-ai-right{
-    width: 60%;
-    height: 100vh;
+    width: 50%;
+    height: 70vh;
     @apply absolute right-0 fc flex-initial;
+  }
+  .try-ai-left-subtitle{
+    font-size: x-large;
+    background-image: linear-gradient(45deg,#FFACD8 ,#FFFFFF);
+    @apply absolute top-6 bg-clip-text text-transparent;
   }
   .try-ai-subtitle{
     font-size: x-large;
@@ -210,9 +223,9 @@ code {
     @apply relative w-full mb-10;
   }
   .try-ai-dhseh-slider{
-    width: 300px;
+    width: 200px;
     height: 20px;
-    @apply absolute left-[424px] mt-8;
+    @apply absolute left-[390px] mt-8;
   }
   .dhseh-slider-thumb{
     width: 16px;
@@ -224,14 +237,14 @@ code {
     @apply bg-white;
   }
   .try-dhseh-text1{
-    @apply absolute left-[280px]  bottom-[6px] text-teal-200 text-lg;
+    @apply absolute left-[220px]  bottom-[6px] text-teal-200 text-lg;
   }
   .try-dhseh-text2{
-    @apply absolute right-[280px]  bottom-[6px] text-red-500 text-lg;
+    @apply absolute right-[200px]  bottom-[6px] text-red-500 text-lg;
   }
   .try-dhseh-result{
     color: rgb(220, 255, 164);
-    @apply absolute left-[530px] text-lg;
+    @apply absolute left-[430px] text-lg;
   }
   .try-ai-wldurquf{
     background-color: transparent;
@@ -240,7 +253,7 @@ code {
   .try-ai-wldurquf2{
     background-color: transparent;
     width: 200px;
-    @apply absolute -bottom-10 left-[32%] text-lg text-center;
+    @apply absolute -bottom-10 left-[24%] text-lg text-center;
   }
   .try-ai-wldurquf2 option {
     background-color: black;
@@ -263,7 +276,7 @@ code {
   }
   .try-ai-input-result1{
     color: rgb(220, 255, 164);
-    @apply absolute right-[600px] -bottom-[40px] text-lg;
+    @apply absolute right-[400px] -bottom-[40px] text-lg;
   }
   .try-ai-input-result3{
     @apply absolute right-[440px] -bottom-[70px] text-lg text-red-500;
@@ -306,7 +319,7 @@ code {
   }
   .ai-content{
     width: 100%;
-    height:75vh;
+    height:600px;
     color: whitesmoke;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -901,10 +914,8 @@ code {
   }
   .downloadtable-wrap{
     width: 1400px;
-    min-height:650px;
-    overflow-y: auto;    
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    max-height:650px;
+
     @apply bg-opacity-95 overflow-y-scroll rounded-lg;
     border: solid 1px #c7c7c7da;
   }
@@ -1001,11 +1012,11 @@ code {
     border-width: 1px;
     text-align:center;
     padding-left: 2%;
-    @apply logo-gradient rounded-xl text-2xl font-bold hover:scale-105;
+    @apply absolute bottom-16 logo-gradient rounded-xl text-2xl font-bold hover:scale-105;
   }
   .link-button-ai{
     width: 280px;
-    height: 20px;
+    height: 40px;
     font-size: 20px;
     @apply logo-gradient font-light hover:scale-105
   }

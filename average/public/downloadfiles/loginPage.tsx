@@ -1,48 +1,63 @@
-import LoginFooter from "components/login/loginFooter";
-import LoginForm from "components/login/loginform";
-import SocialLogin from "components/login/socialLogin";
-import LoginHeader from "components/login/loginHeader";
-import { Link } from "react-router";
-import { useState } from "react";
-import Forget from "components/login/forget";
+import LoginDeco from "components/form/loginDeco";
+import LoginForm from "components/form/loginForm";
+import MainLayout from "components/layouts/mainLayout";
+import ForgetID from "components/form/forgetID";
+import ForgetPW from "components/form/forgetPW";
+import { Link } from "react-router-dom";
+import {useState} from "react";
 
 const LoginPage=()=>{
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isForgetIDOpen, setIsForgetIDOpen] = useState(false);
+    const [isForgetPWOpen,setIsForgetPWOpen] = useState(false);
 
     return(
-        <div className="relative main w-full h-screen bg-loginBG font-Ubuntu">
-            {isModalOpen && <Forget onClose={() => setIsModalOpen(false)} />}
-            <header className="py-10 px-10">
-                <LoginHeader/>
-            </header>
-            <form className="absolute bottom-52 left-56">
-                <div className="absolute w-full top-0 text-center">
-                    <h1 className="text-4xl text-white font-bold">Hello, <span className="logo-gradient">Everyone!</span></h1>
-                    <h4 className="text-white text-xs mt-4">로그인 하시면 저희가 만든 project를 보실 수 있어요! </h4>
-                    <div className="mt-10 ml-16">
-                        <SocialLogin/>
+        <MainLayout>
+            <div className="login-wrap">
+                {isForgetIDOpen && <ForgetID isOpen={isForgetIDOpen} onClose={() => setIsForgetIDOpen(false)} />}
+                {isForgetPWOpen && <ForgetPW isOpen={isForgetPWOpen} onClose={()=> setIsForgetPWOpen(false)}/>}
+
+                {isForgetIDOpen ||isForgetPWOpen === true?"":
+                <div>
+                    <LoginDeco/>
+                    <LoginForm/>
+                <div className="login-link-group">
+                    <div className="forget-link">
+                        <Link
+                            to="#"
+                            onClick={(e:React.MouseEvent<HTMLAnchorElement>)=>setIsForgetIDOpen(true)}
+                            className="link"
+                        >
+                            Forgot email
+                        </Link>
+                        <span className="text-white">&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span>
+                        <Link
+                            to="#"
+                            onClick={(e:React.MouseEvent<HTMLAnchorElement>)=>setIsForgetPWOpen(true)}
+                            className="link"
+                        >
+                            Forget Password?
+                        </Link>
                     </div>
-                    <div className="absolute top-44 left-10 flex flex-row space-x-4">
-                        <div className="w-[220px] border-b-[1px] border-spacing-2 border-gray-400 bg-transparent"></div>
-                        <span className="text-xs text-gray-400">or continue with e-mail</span>
-                        <div className="w-[220px] border-b-[1px] border-spacing-2 border-gray-400 bg-transparent"></div>
+                    <div className="linking-signup">
+                        <Link 
+                            to="/signup"
+                            className="text-white"
+                        >
+                            Don’t have an account?
+                        </Link>
+                        <Link 
+                            to="/signup"
+                            className="link-signup"
+                        >
+                            Sign Up!
+                        </Link>
                     </div>
                 </div>
-                <LoginForm/>
-                <Link 
-                    to="#"
-                    onClick={(e) => {e.preventDefault(); setIsModalOpen(true);}} 
-                    className="absolute bottom-24 left-[246px] logo-gradient text-sm font-medium">Forgot email? or Password?</Link>
-                <div className="absolute bottom-10 left-[200px] text-gray-400 text-sm">
-                    Don’t have an account?
-                    <Link to="/signup" className="logo-gradient pl-4 font-bold text-sm">Sign Up</Link>
                 </div>
-            </form>
-            <footer className="flex absolute bottom-0">
-                <LoginFooter/>
-            </footer>
-        </div>
+                }
+            </div>
+        </MainLayout>
     );
 }
 
