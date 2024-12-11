@@ -1,115 +1,87 @@
+import numpy as np
+import pandas as pd
 import torch
 import torch.nn as nn
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-from sqlalchemy import create_engine
-from sklearn.preprocessing import LabelEncoder, MinMaxScaler
-from sklearn.metrics import mean_squared_error, mean_absolute_error
-from torch.utils.data import DataLoader, TensorDataset
-from scipy import stats
-import numpy as np
-from sklearn.metrics import r2_score
+from sklearn.preprocessing import MinMaxScaler
+from torch.utils.data import DataLoader, Dataset
 import mysql.connector
+import matplotlib.pyplot as plt
+import joblib
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import sys
-from sqlalchemy import create_engine
+import random as ra
 
-# 5. 모델 정의 (LSTM 제거하고 MLP 사용)
-class ElectricityUsagePredictor(nn.Module):
-    def __init__(self, feature_size, hidden_size=64, output_size=12):
-        super(ElectricityUsagePredictor, self).__init__()
-        self.fc1 = nn.Linear(feature_size, hidden_size)
-        self.relu1 = nn.ReLU()
-        self.fc2 = nn.Linear(hidden_size, hidden_size)
-        self.relu2 = nn.ReLU()
-        self.fc3 = nn.Linear(hidden_size, output_size)
+# 모델과 스케일러 경로
+MODEL_PATH = './lstm_model.pth'
+SCALER_PATH = './scaler.pkl'
 
-    def forward(self, x_features):
-        out = self.fc1(x_features)
-        out = self.relu1(out)
-        out = self.fc2(out)
-        out = self.relu2(out)
-        out = self.fc3(out)
+# 저장된 모델 구조와 동일한 하이퍼파라미터 설정
+features = ['year', 'month', 'day', 'Contracttype', 'Attempt', 'Temperature']
+INPUT_DIM = len(features)  # 입력 차원 (features의 개수)
+HIDDEN_DIM = 64  # 은닉 뉴런 수
+OUTPUT_DIM = 1  # 출력 차원
+NUM_LAYERS = 3  # 저장된 모델의 LSTM 레이어 수
+
+# 모델 정의
+class LSTMModel(nn.Module):
+    def __init__(self, input_dim, hidden_dim, output_dim, num_layers):
+        super(LSTMModel, self).__init__()
+        self.lstm = nn.LSTM(input_dim, hidden_dim, num_layers, batch_first=True, dropout=0.2, bidirectional=False)
+        self.fc1 = nn.Linear(hidden_dim, hidden_dim // 2)
+        self.fc2 = nn.Linear(hidden_dim // 2, output_dim)
+
+    def forward(self, x):
+        _, (hn, _) = self.lstm(x)
+        hn = hn[-1]  # 마지막 LSTM 레이어의 hidden state
+        out = torch.relu(self.fc1(hn))  # 첫 번째 은닉층 추가
+        out = self.fc2(out)  # 출력층
         return out
 
-# MySQL 서버에 연결
-# connection = mysql.connector.connect(
-#     host='localhost',          # 호스트 주소 (예: 'localhost')
-#     user='root',       # 사용자명
-#     password='1234',    # 비밀번호
-#     database='electricity',
-#     charset="utf8mb4"
-# )
-engine = create_engine('mysql+pymysql://root:1234@localhost:3306/electricity')
-try:
-    # cursor = connection.cursor()
+# 모델 초기화 및 저장된 가중치 로드
+model = LSTMModel(INPUT_DIM, HIDDEN_DIM, OUTPUT_DIM, NUM_LAYERS)
+model.load_state_dict(torch.load(MODEL_PATH, weights_only=True))
+model.eval()
 
-    # 1. MySQL 데이터 불러오기 및 데이터프레임 생성
+# 스케일러 로드
+scaler = joblib.load(SCALER_PATH)
 
-    # Create a cursor to interact with the MySQL server
-    #2017~2020
-    # cursor.execute("use `electricity`")
-    # cursor.execute("ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '1234';")
-    df = pd.read_sql("select * from `전력소비2017~2020`", engine)
-    # 데이터 전처리: 특성 및 시계열 데이터 분리
-    df = df.astype('float64')
-    x_features = df[["Year", "Contracttype", "City", "Attempt","spring","Summer","Fall","Winter"]]  # 특성 데이터 ,"봄","여름","가을","겨울"
-    y_target = df.iloc[:, 9:].values  # Month별 데이터
+# 새로운 입력 데이터 예측 함수
+def predict_new(model, scaler, input_data):
+    # 입력 데이터에 Usage 더미 값 추가
+    input_data_with_dummy = input_data + [0]  # Usage는 0으로 설정
+    input_scaled = scaler.transform([input_data_with_dummy])[:, :-1]  # Usage는 제외
+    input_tensor = torch.tensor(input_scaled, dtype=torch.float32).unsqueeze(0)
+    predicted_scaled = model(input_tensor).detach().numpy()
+    predicted_original = scaler.inverse_transform(
+        np.concatenate((input_scaled, predicted_scaled), axis=1)
+    )[0, -1]
+    return predicted_original
 
-    # 3. 데이터 정규화
-    scaler = MinMaxScaler()
-    # x_features_scaled = scaler.fit_transform(x_features)
-    x_features = torch.tensor(x_features.to_numpy(), dtype=torch.float32)
-    # y_target_scaled = scaler.fit_transform(y_target)
-    y_target = torch.tensor(y_target, dtype=torch.float32)
+# 콘솔 입력을 통한 데이터 예측
+def get_user_input_and_predict():
+    try:
+        data_list = []
+        randata = []
+        # 리스트 형태로 데이터 입력받기
+        user_input = sys.argv[1]
+        input_data = eval(user_input)  # 문자열을 리스트로 변환
+        if not isinstance(input_data, list) or len(input_data) != 6:
+            raise ValueError("Input must be a list of six numerical values.")
+        input_data[0] = 2020
+        # input_data[4] = 1
+        # print(input_data)
+        for i in range(1,13):
+            input_data[1] = i
+            # input_data[3] = 1
+            input_data[3] = [2, 4, 3, 1, 5, 2, 1, 5, 5, 1, 5, 2][i-1]#ra.randint(1,5)
+            randata.append(input_data[3])
+            #input_data[5] = 5.9
+            predicted_value = predict_new(model, scaler, input_data)
+            data_list.append(predicted_value)
+        print(f"{data_list}")
+        print(randata)
+    except Exception as e:
+        print(f"Error: {e}. Please enter a valid input list.")
 
-    # 4. 이상치 탐지 및 제거 (IQR 방법 사용)
-    # y_target의 IQR 계산
-    Q1 = np.percentile(y_target.numpy(), 30, axis=0)
-    Q3 = np.percentile(y_target.numpy(), 70, axis=0)
-    IQR = Q3 - Q1
-
-    # 이상치 조건 설정
-    lower_bound = Q1 - 1.5 * IQR
-    upper_bound = Q3 + 1.5 * IQR
-
-    # 이상치가 아닌 데이터만 선택
-    filtered_entries = ~((y_target.numpy() < lower_bound) | (y_target.numpy() > upper_bound)).any(axis=1)
-
-    x_features_filtered = x_features[filtered_entries]
-    y_target_filtered = y_target[filtered_entries]
-
-    # 모델 인스턴스 생성
-    feature_size = x_features_filtered.size(1)
-    model = ElectricityUsagePredictor(feature_size)
-
-    # 모델 가중치 로드
-    model.load_state_dict(torch.load('./final_50Percent.pth', weights_only=True))
-
-
-    # 모델을 평가 모드로 설정
-    model.eval()
-
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model.to(device)
-
-    # y_true_np = y_true.cpu().numpy()  # GPU에서 CPU로 이동
-    # y_pred_np = y_pred.cpu().numpy()  # GPU에서 CPU로 이  동
-    # r2 = r2_score(y_true_np, y_pred_np)
-
-    # print(f"R² 스코어: {r2:.4f}")
-    #[2020, 1, 1, 1,12.0,23.9,14.1,0.9]
-    #입력 데이터 2020 1  1  1 12.0 23.9 14.1 0.9
-    # data = input("예측 데이터 입력").split(",")
-    data = sys.argv #.split(",")
-    # print([float(x.strip()) for x in data[1:]])
-    x_features_new = torch.tensor([float(x.strip()) for x in data[1:]], dtype=torch.float32).to(device)  # 예시 특성 데이터 ,12.0,23.9,14.1,0.9
-
-    with torch.no_grad():
-        y_new_pred = model(x_features_new)
-
-    # print("예측 결과 (다음 해의 Month별 전기 사용량):")
-    print(y_new_pred.flatten().cpu().numpy())  # GPU에서 CPU로 이동하여 결과 출력
-except Exception as e:
-    print(f"모델 로드 오류: {e}")
-    exit(1)
+# 사용자 입력 데이터 예측
+get_user_input_and_predict()

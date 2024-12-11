@@ -16,7 +16,8 @@ const { spawn } = require('child_process');//python script 실행
 // CORS 
 app.use(cors({
     //client 3000 request 만 처리
-    origin: 'http://192.168.0.40:3000', 
+    origin: 'http://localhost:3000', 
+    //origin:"*",
     credentials: true,
 }));
 
@@ -45,7 +46,7 @@ const { email_service, user, pass } = process.env; //.env - gmail| mail 보낼 e
 
 const transporter = nodemailer.createTransport({
   service: email_service,
-  port: 3001, //  MailDev SMTP port
+  port: 3030, //  MailDev SMTP port
   secure: true, // TLS 사용 여부
   auth: {
     user: user,
@@ -125,7 +126,7 @@ app.post("/api/login", async (req, res) => {
       // HttpOnly 쿠키로 JWT 저장 ->client 에서는 브라우저에 자동으로 쿠키 전송 -> 로컬스토리지에 따로 저장 x
       //브라우저 내에서 실행되는 JavaScript가 토큰을 훔쳐가는 것을 방지
       //HttpOnly 쿠키는 클라이언트 측 스크립트로 접근할 수 없고, 브라우저가 자동으로 요청 헤더에 포함시켜 서버에 전송
-      res.cookie("token", token, {
+     res.cookie("token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV !== "production", //개발 환경에서 http로 전송되도록 설정
         //secure: process.env.NODE_ENV === "production", // 프로덕션 환경에서만 secure 사용
@@ -415,7 +416,7 @@ app.post("/api/predict", (req, res) => {
     }
 
     // Python 스크립트를 실행
-    const pythonProcess = spawn("python3", ["Learning.py", ...features]);
+    const pythonProcess = spawn("python", ["Learning.py", JSON.stringify(features)]);
 
     let predictionResult = "";
     pythonProcess.stdout.on("data", (data) => {
@@ -429,8 +430,10 @@ app.post("/api/predict", (req, res) => {
     pythonProcess.on("close", (code) => {
         if (code === 0) {
             // Python 스크립트 실행 성공
+            console.log(predictionResult);
             const predictions = predictionResult.trim().split(",").map(Number); // 예측 결과를 배열로 변환
-            res.status(200).json({ predictions });
+            // console.log(predictions)
+            res.status(200).json({predictions });
         } else {
             // Python 스크립트 실행 실패
             res.status(500).json({ message: "Failed to execute prediction model." });
